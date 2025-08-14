@@ -7,7 +7,7 @@ import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
 import { useAuth } from "@/hooks/useAuth";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { 
   Music, 
   Mic, 
@@ -47,6 +47,7 @@ import {
 
 export default function Studio() {
   const { isLoggedIn, user } = useAuth();
+  const navigate = useNavigate();
   const [prompt, setPrompt] = useState('');
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -129,11 +130,11 @@ export default function Studio() {
   ];
 
   const navigationItems = [
-    { id: 'home', label: '首页', icon: Home, active: false },
-    { id: 'create', label: '创作', icon: Plus, active: true },
-    { id: 'library', label: '音乐库', icon: Library, active: false },
-    { id: 'discover', label: '发现', icon: Search, active: false },
-    { id: 'trending', label: '热门', icon: TrendingUp, active: false }
+    { id: 'home', label: '首页', icon: Home, action: () => navigate('/') },
+    { id: 'create', label: '创作', icon: Plus, action: () => setActiveTab('create') },
+    { id: 'library', label: '音乐库', icon: Library, action: () => setActiveTab('library') },
+    { id: 'discover', label: '发现', icon: Search, action: () => setActiveTab('discover') },
+    { id: 'trending', label: '热门', icon: TrendingUp, action: () => setActiveTab('trending') }
   ];
 
   const handleGenerate = async () => {
@@ -189,7 +190,7 @@ export default function Studio() {
                   key={item.id}
                   variant={activeTab === item.id ? "secondary" : "ghost"}
                   className="w-full justify-start"
-                  onClick={() => setActiveTab(item.id)}
+                  onClick={item.action}
                 >
                   <item.icon className="w-4 h-4 mr-3" />
                   {item.label}
